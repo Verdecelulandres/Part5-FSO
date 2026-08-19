@@ -3,6 +3,7 @@ import blogService from './services/blogs';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import CreateBlogForm from './components/CreateBlogForm';
+import Notification from './components/Notification';
 import User from './components/User';
 import Blog from './components/Blog';
 
@@ -14,6 +15,8 @@ const App = () => {
   const [blogTitle, setBlogTitle] = useState('');
   const [blogAuthor, setBlogAuthor] = useState('');
   const [blogUrl, setBlogUrl] = useState('');
+  const [notificationMsg, setNotificationMsg] = useState('');
+  const [isError, setIsError] = useState(false);
 
   const userStorageStr = 'blogAppUser';
 
@@ -27,6 +30,7 @@ const App = () => {
     const storedUser = window.localStorage.getItem(userStorageStr);
     if (storedUser) {
       const loggedInUser = JSON.parse(storedUser);
+      blogService.setToken(loggedInUser.token);
       setUser(loggedInUser);
     }
   }, []);
@@ -44,6 +48,8 @@ const App = () => {
       }
     } catch (error) {
       console.error(error);
+      setIsError(true);
+      displayNotification('wrong username or password');
     }
   }
 
@@ -76,25 +82,52 @@ const App = () => {
       setBlogTitle('');
       setBlogAuthor('');
       setBlogUrl('');
+      displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
     } catch (error) {
       console.error(error);
+      setIsError(true);
+      displayNotification(error.response.data.error);
     }
+  }
+
+  const displayNotification = (msg) => {
+    setNotificationMsg(msg);
+
+    setTimeout(() => {
+      setNotificationMsg('');
+      setIsError(false);
+    }, 5000);
   }
 
   return (
     <div>
       {!user &&
-        <LoginForm
-          username={username}
-          password={password}
-          handleLogin={handleLogin}
-          handlePassword={({ target }) => setPassword(target.value)}
-          handleUsername={({ target }) => setUsername(target.value)}
-        />
+        <>
+          <h2>Login to application</h2>
+          {notificationMsg &&
+            <Notification
+              message={notificationMsg}
+              isError={isError}
+            />
+          }
+          <LoginForm
+            username={username}
+            password={password}
+            handleLogin={handleLogin}
+            handlePassword={({ target }) => setPassword(target.value)}
+            handleUsername={({ target }) => setUsername(target.value)}
+          />
+        </>
       }
       {user &&
         <>
           <h2>blogs</h2>
+          {notificationMsg &&
+            <Notification
+              message={notificationMsg}
+              isError={isError}
+            />
+          }
           <User
             name={user.name}
             handleLogout={handleLogout}

@@ -1,8 +1,11 @@
-const User = ({ name }) => {
+const User = ({ name, handleLogout }) => {
   return (
-    <p>
-      { name } logged in
-    </p>
+    <>
+      <span>
+        {name} logged in
+      </span>
+      <button onClick={handleLogout}>logout</button>
+    </>
   );
 }
 

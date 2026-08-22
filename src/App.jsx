@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
@@ -18,6 +18,8 @@ const App = () => {
   const [blogUrl, setBlogUrl] = useState('');
   const [notificationMsg, setNotificationMsg] = useState('');
   const [isError, setIsError] = useState(false);
+
+  const blogFormRef = useRef();
 
   const userStorageStr = 'blogAppUser';
 
@@ -72,11 +74,13 @@ const App = () => {
 
   const handleNewBlog = async event => {
     event.preventDefault();
+    
     const newBlog = {
       title: blogTitle,
       author: blogAuthor,
       url: blogUrl
     }
+    blogFormRef.current.toggleVisibility();
     try {
       const savedBlog = await blogService.create(newBlog);
       setBlogs(blogs.concat(savedBlog));
@@ -135,6 +139,7 @@ const App = () => {
           />
           <Togglable 
             btnLabel="create new blog"
+            ref={blogFormRef}
           >
             <CreateBlogForm
               blogAuthor={blogAuthor}

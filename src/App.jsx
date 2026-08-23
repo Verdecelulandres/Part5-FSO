@@ -13,9 +13,6 @@ const App = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [blogTitle, setBlogTitle] = useState('');
-  const [blogAuthor, setBlogAuthor] = useState('');
-  const [blogUrl, setBlogUrl] = useState('');
   const [notificationMsg, setNotificationMsg] = useState('');
   const [isError, setIsError] = useState(false);
 
@@ -61,32 +58,12 @@ const App = () => {
     window.localStorage.removeItem(userStorageStr);
   }
 
-  const handleBlogChange = event => {
-    const { name, value } = event.target;
-    if (name === 'blogTitle') {
-      setBlogTitle(value);
-    } else if (name === 'blogAuthor') {
-      setBlogAuthor(value);
-    } else if (name === 'blogUrl') {
-      setBlogUrl(value);
-    }
-  }
-
-  const handleNewBlog = async event => {
-    event.preventDefault();
-    
-    const newBlog = {
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl
-    }
+  const handleNewBlog = async newBlog => {
     blogFormRef.current.toggleVisibility();
     try {
       const savedBlog = await blogService.create(newBlog);
       setBlogs(blogs.concat(savedBlog));
-      setBlogTitle('');
-      setBlogAuthor('');
-      setBlogUrl('');
+      
       displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
     } catch (error) {
       console.error(error);
@@ -142,11 +119,7 @@ const App = () => {
             ref={blogFormRef}
           >
             <CreateBlogForm
-              blogAuthor={blogAuthor}
-              blogTitle={blogTitle}
-              blogUrl={blogUrl}
-              handleBlogChange={handleBlogChange}
-              handleNewBlog={handleNewBlog}
+              createNewBlog={handleNewBlog}
             />
           </Togglable>
           {blogs.map(blog =>

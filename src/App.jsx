@@ -161,6 +161,7 @@ const App = () => {
                   blog={blog}
                   likeBlog={likeBlog}
                   removeBlog={removeBlog}
+                  madeByUser={user.name === blog.user.name}
                 />
               )
           }

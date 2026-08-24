@@ -87,7 +87,19 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
+  }
 
+  const removeBlog = async (blogToDelete) => {
+    const { title, id, author } = blogToDelete;
+    if (!window.confirm(`Remove blog ${title} by ${author}?`)) {
+      return;
+    }
+    try {
+      await blogService.deleteBlog(id);
+      setBlogs(blogs.filter(b => b.id !== id));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   const displayNotification = (msg) => {
@@ -148,6 +160,7 @@ const App = () => {
                   key={blog.id}
                   blog={blog}
                   likeBlog={likeBlog}
+                  removeBlog={removeBlog}
                 />
               )
           }

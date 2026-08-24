@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, likeBlog }) => {
+const Blog = ({ blog, likeBlog, removeBlog }) => {
 
   const [viewFull, setViewFull] = useState(false);
 
@@ -33,6 +33,7 @@ const Blog = ({ blog, likeBlog }) => {
             <button onClick={handleLike}>like</button>
           </div>
           <div>{blog.user.name}</div>
+          <button onClick={() => removeBlog(blog)}>remove</button>
         </div>
       }
 

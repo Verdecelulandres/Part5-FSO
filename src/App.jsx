@@ -72,6 +72,22 @@ const App = () => {
     }
   }
 
+  const likeBlog = async (updatedBlog) => {
+    try {
+      const likedBlog = await blogService.like(updatedBlog);
+
+      setBlogs(blogs.map(b => {
+        if (b.id === updatedBlog.id) {
+          b = likedBlog;
+        }
+        return b;
+      }));
+    } catch (error) {
+      console.log(error);
+    }
+    
+  }
+
   const displayNotification = (msg) => {
     setNotificationMsg(msg);
 
@@ -123,7 +139,11 @@ const App = () => {
             />
           </Togglable>
           {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} />
+            <Blog
+              key={blog.id}
+              blog={blog}
+              likeBlog={likeBlog}
+            />
           )}
         </>
       }

@@ -1,26 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
-import { expect } from 'vitest';
+import { expect, test, vi } from 'vitest';
 
 
 describe('<Blog /> tests', () => {
 
   let blogContainer = null;
+  const likeBlog = vi.fn();
 
   beforeEach(() => {
     const blog = {
       title: 'Test blog',
       author: 'test',
       url: 'www.test.com',
-      likes: '1',
+      likes: 1,
       user: {
         name: 'testUser',
         id: '1'
       }
     }
 
-    const { container } = render(<Blog blog={blog} />);
+    const { container } = render(<Blog blog={blog} likeBlog={likeBlog} />);
     blogContainer = container;
   });
   test('Renders certain blog parts by default', () => {
@@ -52,6 +53,17 @@ describe('<Blog /> tests', () => {
 
     expect(urlDiv).toHaveTextContent('www.test.com');
     expect(likesDiv).toHaveTextContent('1');
+  });
 
+  test('Ensure like callback is called correctly', async () => {
+    const user = userEvent.setup();
+    const viewBtn = screen.getByText('view');
+    await user.click(viewBtn);
+
+    const likeBtn = screen.getByText('like');
+    await user.click(likeBtn);
+    await user.click(likeBtn);
+
+    expect(likeBlog.mock.calls).toHaveLength(2);
   });
 });

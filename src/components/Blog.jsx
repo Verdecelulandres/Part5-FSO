@@ -19,20 +19,21 @@ const Blog = ({ blog, likeBlog, removeBlog, madeByUser }) => {
 
   return (
     <div className="blog">
-      <div>
-        {blog.title} {blog.author}
+      <div className='blog_default'>
+        <span className='blog_title'>{blog.title} </span>
+        <span className='blog_author'>{blog.author}</span>
         <button onClick={toggleFullView}>
           {viewFull ? 'hide' : 'view'}
         </button>
       </div>
       {viewFull &&
-        <div>
-          <div>{blog.url}</div>
-          <div>
+        <div className='blog_expanded'>
+          <div className='blog_url'>{blog.url}</div>
+          <div className='blog_likes'>
             likes {blog.likes}
             <button onClick={handleLike}>like</button>
           </div>
-          <div>{blog.user.name}</div>
+          <div className='blog_user'>{blog.user.name}</div>
           {madeByUser &&
             <button onClick={() => removeBlog(blog)}>remove</button>
           }

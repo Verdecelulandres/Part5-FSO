@@ -63,7 +63,7 @@ const App = () => {
     try {
       const savedBlog = await blogService.create(newBlog);
       setBlogs(blogs.concat(savedBlog));
-      
+
       displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
     } catch (error) {
       console.error(error);
@@ -75,7 +75,7 @@ const App = () => {
   const likeBlog = async (updatedBlog) => {
     try {
       const likedBlog = await blogService.like(updatedBlog);
-      
+
       setBlogs(blogs.map(b => {
         if (b.id === updatedBlog.id) {
           const fullUser = b.user;
@@ -87,7 +87,7 @@ const App = () => {
     } catch (error) {
       console.log(error);
     }
-    
+
   }
 
   const displayNotification = (msg) => {
@@ -132,7 +132,7 @@ const App = () => {
             name={user.name}
             handleLogout={handleLogout}
           />
-          <Togglable 
+          <Togglable
             btnLabel="create new blog"
             ref={blogFormRef}
           >
@@ -140,13 +140,17 @@ const App = () => {
               createNewBlog={handleNewBlog}
             />
           </Togglable>
-          {blogs.map(blog =>
-            <Blog
-              key={blog.id}
-              blog={blog}
-              likeBlog={likeBlog}
-            />
-          )}
+          {
+            blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog =>
+                <Blog
+                  key={blog.id}
+                  blog={blog}
+                  likeBlog={likeBlog}
+                />
+              )
+          }
         </>
       }
 

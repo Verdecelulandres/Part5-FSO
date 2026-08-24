@@ -27,7 +27,15 @@ export default [
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true }
-      ]
+      ],
+      indent: ['warn', 2],
+      'linebreak-style': ['warn', 'unix'],
+      quotes: ['warn', 'single'],
+      eqeqeq: 'warn',
+      'no-trailing-spaces': 'warn',
+      'object-curly-spacing': ['warn', 'always'],
+      'arrow-spacing': ['warn', { before: true, after: true }],
+      'no-console': 'off'
     }
   }
 ]

@@ -75,10 +75,12 @@ const App = () => {
   const likeBlog = async (updatedBlog) => {
     try {
       const likedBlog = await blogService.like(updatedBlog);
-
+      
       setBlogs(blogs.map(b => {
         if (b.id === updatedBlog.id) {
+          const fullUser = b.user;
           b = likedBlog;
+          b.user = fullUser;
         }
         return b;
       }));

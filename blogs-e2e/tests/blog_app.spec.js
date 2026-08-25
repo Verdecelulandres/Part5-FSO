@@ -72,7 +72,6 @@ describe('Blog app', () => {
           test('blog creator can delete a blog', async ({ page }) => {
             const blogDiv = await page.getByText('blog2', { exact: true }).locator('../..');
             await blogDiv.getByRole('button', { name: 'view' }).click();
-            await page.pause();
             page.on('dialog', dialog => dialog.accept());
             await blogDiv.getByRole('button', { name: 'remove' }).click();
             await expect(blogDiv).not.toBeVisible();
@@ -99,7 +98,27 @@ describe('Blog app', () => {
 
         });
 
+        describe('When liking', () => {
+          beforeEach(async ({ page }) => {
+            const blog1 = await getExpandedBlogContainer(page, 'blog1');
+            const blog2 = await getExpandedBlogContainer(page, 'blog2');
+            await likeBlog(blog2);
+            await likeBlog(blog2);
+            await likeBlog(blog1);
+          });
 
+          test('blogs are sorted according to likes descendently', async ({ page }) => {
+            const allBlogs = await page.locator('.blog');
+            await page.pause();
+            await allBlogs.first().getByRole('button', { name: 'hide' });
+            await allBlogs.last().getByRole('button', { name: 'hide' });
+            await expect(allBlogs.first().locator('.blog_likes')).toContainText('likes 2');
+            await expect(allBlogs.first().locator('.blog_title')).toContainText('blog2');
+            await expect(allBlogs.last().locator('.blog_likes')).toContainText('likes 1');
+            await expect(allBlogs.last().locator('.blog_title')).toContainText('blog1');
+          });
+
+        });
       });
     });
   });

@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 const { test, expect, beforeEach, describe } = require('@playwright/test');
+const { login } = require('./helper');
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -22,6 +23,18 @@ describe('Blog app', () => {
     await expect(usernameInput).toBeVisible();
     await expect(pwdInput).toBeVisible();
     await expect(loginBtn).toBeVisible();
+  });
+
+  describe('Login', () => {
+    test('succeeds with correct credentials', async ({ page }) => {
+      await login(page, 'test', 'password');
+      // await page.pause();
+      await expect(page.getByText('Test user logged in')).toBeVisible();
+    });
+
+    // test('fails with wrong credentials', async ({ page }) => {
+
+    // });
   });
 
 });

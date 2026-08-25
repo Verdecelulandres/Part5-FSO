@@ -60,10 +60,13 @@ describe('Blog app', () => {
         });
 
         test('a blog can be liked', async ({ page }) => {
-          await page.getByRole('button', { name: 'view' }).first().click();
-          const likesDiv = await page.locator('.blog_likes').first();
+          // Testing with last blog in list.
+          const blogDiv = await page.getByText('blog2', { exact: true }).locator('../..');
+          await blogDiv.getByRole('button', { name: 'view' }).click();
+          await page.pause();
+          const likesDiv = blogDiv.locator('.blog_likes');
           await expect(likesDiv).toContainText('likes 0');
-          await page.getByRole('button', { name: 'like' }).click();
+          await blogDiv.getByRole('button', { name: 'like' }).click();
           await expect(likesDiv).toContainText('likes 1');
         });
       });

@@ -68,6 +68,28 @@ describe('Blog app', () => {
           await blogDiv.getByRole('button', { name: 'like' }).click();
           await expect(likesDiv).toContainText('likes 1');
         });
+
+        describe('When deleting', () => {
+          beforeEach(async ({ request }) => {
+            await request.post('/api/users', {
+              data: {
+                username: 'other',
+                password: 'password',
+                name: 'Other user'
+              }
+            });
+          });
+
+          test('blog creator can delete a blog', async ({ page }) => {
+            const blogDiv = await page.getByText('blog2', { exact: true }).locator('../..');
+            await blogDiv.getByRole('button', { name: 'view' }).click();
+            await page.pause();
+            page.on('dialog', dialog => dialog.accept());
+            await blogDiv.getByRole('button', { name: 'remove' }).click();
+            await expect(blogDiv).not.toBeVisible();
+          });
+
+        });
       });
     });
   });

@@ -63,7 +63,6 @@ describe('Blog app', () => {
           // Testing with last blog in list.
           const blogDiv = await page.getByText('blog2', { exact: true }).locator('../..');
           await blogDiv.getByRole('button', { name: 'view' }).click();
-          await page.pause();
           const likesDiv = blogDiv.locator('.blog_likes');
           await expect(likesDiv).toContainText('likes 0');
           await blogDiv.getByRole('button', { name: 'like' }).click();

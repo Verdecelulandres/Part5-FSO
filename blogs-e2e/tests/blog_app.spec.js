@@ -28,13 +28,19 @@ describe('Blog app', () => {
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await login(page, 'test', 'password');
-      // await page.pause();
+
       await expect(page.getByText('Test user logged in')).toBeVisible();
     });
 
-    // test('fails with wrong credentials', async ({ page }) => {
+    test('fails with wrong credentials', async ({ page }) => {
+      await login(page, 'test', 'wrong');
 
-    // });
+      const errorMsg = page.locator('.error');
+      await expect(errorMsg).toContainText('wrong username or password');
+      await expect(errorMsg).toHaveCSS('border-style', 'solid');
+      await expect(errorMsg).toHaveCSS('color', 'rgb(255, 0, 0)');
+      await expect(page.getByText('Test user logged in')).not.toBeVisible();
+    });
   });
 
 });

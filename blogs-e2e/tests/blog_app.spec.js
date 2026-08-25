@@ -52,7 +52,21 @@ describe('Blog app', () => {
 
         await expect(page.getByText('Test blog', { exact: true })).toBeVisible();
       });
+
+      describe('When blogs exist', () => {
+        beforeEach(async ({ page }) => {
+          await createBlog(page, 'blog1', 'author1', 'www.blog1.com');
+          await createBlog(page, 'blog2', 'author2', 'www.blog2.com');
+        });
+
+        test('a blog can be liked', async ({ page }) => {
+          await page.getByRole('button', { name: 'view' }).first().click();
+          const likesDiv = await page.locator('.blog_likes').first();
+          await expect(likesDiv).toContainText('likes 0');
+          await page.getByRole('button', { name: 'like' }).click();
+          await expect(likesDiv).toContainText('likes 1');
+        });
+      });
     });
   });
-
 });

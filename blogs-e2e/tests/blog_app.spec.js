@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { test, expect, beforeEach, describe } = require('@playwright/test');
-const { login, createBlog, getBlogContainer } = require('./helper');
+const { login, createBlog, getExpandedBlogContainer, likeBlog } = require('./helper');
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -61,11 +61,10 @@ describe('Blog app', () => {
 
         test('a blog can be liked', async ({ page }) => {
           // Testing with last blog in list.
-          const blogDiv = await page.getByText('blog2', { exact: true }).locator('../..');
-          await blogDiv.getByRole('button', { name: 'view' }).click();
+          const blogDiv = await getExpandedBlogContainer(page, 'blog2');
           const likesDiv = blogDiv.locator('.blog_likes');
           await expect(likesDiv).toContainText('likes 0');
-          await blogDiv.getByRole('button', { name: 'like' }).click();
+          await likeBlog(blogDiv);
           await expect(likesDiv).toContainText('likes 1');
         });
 
@@ -91,17 +90,16 @@ describe('Blog app', () => {
             await login(page, 'other', 'password');
             await createBlog(page, 'blog3', 'author3', 'www.blog3.com');
 
-            const ownBlog = await getBlogContainer(page, 'blog3');
-            const otherBlog = await getBlogContainer(page, 'blog1');
+            const ownBlog = await getExpandedBlogContainer(page, 'blog3');
+            const otherBlog = await getExpandedBlogContainer(page, 'blog1');
 
-            await ownBlog.getByRole('button', { name: 'view' }).click();
             await expect(ownBlog.getByRole('button', { name: 'remove' })).toBeVisible();
-
-            await otherBlog.getByRole('button', { name: 'view' }).click();
             await expect(otherBlog.getByRole('button', { name: 'remove' })).not.toBeVisible();
           });
 
         });
+
+
       });
     });
   });

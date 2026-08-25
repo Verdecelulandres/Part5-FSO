@@ -20,7 +20,15 @@ const getExpandedBlogContainer = async (page, blogToFind) => {
 }
 
 const likeBlog = async (blogToLike) => {
+  let likeSpanContent = await blogToLike
+    .getByText(/^likes \d$/)
+    .textContent();
+  likeSpanContent = likeSpanContent.split(' ');
+  likeSpanContent[1] = String(Number(likeSpanContent[1]) + 1);
+  likeSpanContent = likeSpanContent.join(' ');
+
   await blogToLike.getByRole('button', { name: 'like' }).click();
+  await blogToLike.getByText(likeSpanContent, { exact: true }).waitFor();
 }
 
 export { login, createBlog, getExpandedBlogContainer, likeBlog }

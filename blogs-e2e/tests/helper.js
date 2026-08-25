@@ -13,11 +13,15 @@ const createBlog = async (page, title, author, url) => {
   await page.getByText(title, { exact: true }).waitFor();
 }
 
-const likeBlog = async (page, blogToFind) => {
+const getBlogContainer = async (page, blogToFind) => {
   const blogDiv = await page.getByText(blogToFind, { exact: true }).locator('../..');
-  await blogDiv.getByRole('button', { name: 'view' }).click();
-  await blogDiv.getByRole('button', { name: 'like' }).click();
   return blogDiv;
 }
 
-export { login, createBlog, likeBlog }
+const likeBlog = async (page, blogToLike) => {
+  const blogDiv = await getBlogContainer(page, blogToLike);
+  await blogDiv.getByRole('button', { name: 'view' }).click();
+  await blogDiv.getByRole('button', { name: 'like' }).click();
+}
+
+export { login, createBlog, getBlogContainer, likeBlog }

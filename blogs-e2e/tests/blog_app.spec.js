@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { test, expect, beforeEach, describe } = require('@playwright/test');
-const { login } = require('./helper');
+const { login, createBlog } = require('./helper');
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -40,6 +40,18 @@ describe('Blog app', () => {
       await expect(errorMsg).toHaveCSS('border-style', 'solid');
       await expect(errorMsg).toHaveCSS('color', 'rgb(255, 0, 0)');
       await expect(page.getByText('Test user logged in')).not.toBeVisible();
+    });
+
+    describe('When logged in', () => {
+      beforeEach(async ({ page }) => {
+        await login(page, 'test', 'password');
+      });
+
+      test('a new blog can be created', async ({ page }) => {
+        await createBlog(page, 'Test blog', 'Test Author', 'www.test.com');
+
+        await expect(page.getByText('Test blog', { exact: true })).toBeVisible();
+      });
     });
   });
 

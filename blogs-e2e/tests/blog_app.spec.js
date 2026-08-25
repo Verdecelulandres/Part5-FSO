@@ -2,7 +2,15 @@
 const { test, expect, beforeEach, describe } = require('@playwright/test');
 
 describe('Blog app', () => {
-  beforeEach(async ({ page }) => {
+  beforeEach(async ({ page, request }) => {
+    await request.post('/api/test/reset');
+    await request.post('/api/users', {
+      data: {
+        username: 'test',
+        password: 'password',
+        name: 'Test user'
+      }
+    });
     await page.goto('/');
   });
 
@@ -15,4 +23,5 @@ describe('Blog app', () => {
     await expect(pwdInput).toBeVisible();
     await expect(loginBtn).toBeVisible();
   });
+
 });

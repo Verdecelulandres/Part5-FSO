@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
-import { beforeEach, describe, expect } from 'vitest';
+import { beforeEach, describe, expect, test } from 'vitest';
 
 describe('<Blog /> tests', () => {
 
@@ -64,6 +64,11 @@ describe('<Blog /> tests', () => {
           id: 1
         }
         render(<Blog blog={blog} likeBlog={likeBlog} loggedUser={user} />);
+      });
+
+      test('remove button is shown', async () => {
+        const removeBtn = screen.getByRole('button', { name: 'remove' });
+        expect(removeBtn).toBeVisible();
       });
 
       test('like callback is called correctly', async () => {

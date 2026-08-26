@@ -42,6 +42,7 @@ const App = () => {
         setUser(JSONusr);
         window.localStorage.setItem(userStorageStr, JSON.stringify(JSONusr));
         blogService.setToken(JSONusr.token);
+        navigate('/');
       }
     } catch (error) {
       console.error(error);

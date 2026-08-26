@@ -116,7 +116,10 @@ const App = () => {
     <Router>
       <div className='navbar'>
         <Link to="/">blogs</Link>
-        <Link to="/login">login</Link>
+        {user
+          ? <button onClick={handleLogout}>logout</button>
+          : <Link to="/login">login</Link>
+        }
       </div>
       <Routes>
         <Route path="/" element={

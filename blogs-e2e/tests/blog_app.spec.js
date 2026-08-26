@@ -48,6 +48,11 @@ describe('Blog app', () => {
       });
 
       test('a new blog can be created', async ({ page }) => {
+        const createBlogLink = await page.getByRole('link', { name: 'new blog' });
+        await expect(createBlogLink).toBeVisible();
+
+        await createBlogLink.click();
+
         await createBlog(page, 'Test blog', 'Test Author', 'www.test.com');
 
         await expect(page.getByText('Test blog', { exact: true })).toBeVisible();

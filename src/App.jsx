@@ -100,6 +100,7 @@ const App = () => {
     try {
       await blogService.deleteBlog(id);
       setBlogs(blogs.filter(b => b.id !== id));
+      navigate('/');
     } catch (error) {
       console.log(error);
     }

@@ -1,11 +1,7 @@
-import { useState } from 'react'
-
 const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
 
-  const [viewFull, setViewFull] = useState(false);
-
-  const toggleFullView = () => {
-    setViewFull(!viewFull);
+  if (!blog) {
+    return null;
   }
 
   const handleLike = () => {
@@ -21,30 +17,29 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
 
   return (
     <div className="blog">
-      <div className='blog_default'>
-        <span className='blog_title'>{blog.title} </span>
-        <span className='blog_author'>{blog.author}</span>
-        <button onClick={toggleFullView}>
-          {viewFull ? 'hide' : 'view'}
-        </button>
-      </div>
-      {viewFull &&
-        <div className='blog_expanded'>
-          <div className='blog_url'>{blog.url}</div>
-          <div className='blog_likes'>
-            <span>likes {blog.likes}</span>
-            {loggedUser &&
-              <button onClick={handleLike}>like</button>
-            }
-          </div>
-          <div className='blog_user'>{blog.user.name}</div>
-          {madeByUser &&
-            <button onClick={() => removeBlog(blog)}>remove</button>
-          }
+      <h3 className='blog_title'>
+        <span className='blog_author'>{blog.author}: </span>
+        <span className='blog_title'>{blog.title}</span>
+      </h3>
 
+      <div className='blog_expanded'>
+        <div className='blog_url'>
+          <a href={blog.url}>{blog.url}</a>
         </div>
-      }
+        <div className='blog_likes'>
+          <span>likes {blog.likes}</span>
+          {loggedUser &&
+            <button onClick={handleLike}>like</button>
+          }
+        </div>
+        <div className='blog_user'>
+          Added by {blog.user.name}
+        </div>
+        {madeByUser &&
+          <button onClick={() => removeBlog(blog)}>remove</button>
+        }
 
+      </div>
     </div>
   )
 }

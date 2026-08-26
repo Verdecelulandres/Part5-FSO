@@ -1,30 +1,29 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
-import CreateBlogForm from './components/CreateBlogForm';
-import Notification from './components/Notification';
-import User from './components/User';
-import Blog from './components/Blog';
-import Togglable from './components/Togglable';
+import BlogList from './components/BlogList';
+
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [notificationMsg, setNotificationMsg] = useState('');
-  const [isError, setIsError] = useState(false);
+  // const [notificationMsg, setNotificationMsg] = useState('');
+  // const [isError, setIsError] = useState(false);
 
-  const blogFormRef = useRef();
-
-  const userStorageStr = 'blogAppUser';
+  // const blogFormRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
     )
   }, []);
+
+  const userStorageStr = 'blogAppUser';
+
 
   useEffect(() => {
     const storedUser = window.localStorage.getItem(userStorageStr);
@@ -48,8 +47,8 @@ const App = () => {
       }
     } catch (error) {
       console.error(error);
-      setIsError(true);
-      displayNotification('wrong username or password');
+      // setIsError(true);
+      // displayNotification('wrong username or password');
     }
   }
 
@@ -59,18 +58,18 @@ const App = () => {
   }
 
   const handleNewBlog = async newBlog => {
-    blogFormRef.current.toggleVisibility();
+    // blogFormRef.current.toggleVisibility();
     try {
       const savedBlog = await blogService.create(newBlog);
-      const userId = savedBlog.user;
-      savedBlog.user = { id: userId, name: user.name, username: user.username };
+      // const userId = savedBlog.user;
+      // savedBlog.user = { id: userId, name: user.name, username: user.username };
       setBlogs(blogs.concat(savedBlog));
 
-      displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
+      // displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
     } catch (error) {
       console.error(error);
-      setIsError(true);
-      displayNotification(error.response.data.error);
+      // setIsError(true);
+      // displayNotification(error.response.data.error);
     }
   }
 
@@ -104,26 +103,26 @@ const App = () => {
     }
   }
 
-  const displayNotification = (msg) => {
-    setNotificationMsg(msg);
+  // const displayNotification = (msg) => {
+  //   setNotificationMsg(msg);
 
-    setTimeout(() => {
-      setNotificationMsg('');
-      setIsError(false);
-    }, 5000);
-  }
+  //   setTimeout(() => {
+  //     setNotificationMsg('');
+  //     setIsError(false);
+  //   }, 5000);
+  // }
 
   return (
-    <div>
-      {!user &&
-        <>
-          <h2>Login to application</h2>
-          {notificationMsg &&
-            <Notification
-              message={notificationMsg}
-              isError={isError}
-            />
-          }
+    <Router>
+      <div className='navbar'>
+        <Link to="/">blogs</Link>
+        <Link to="/login">login</Link>
+      </div>
+      <Routes>
+        <Route path="/" element={
+          <BlogList blogs={blogs} />
+        } />
+        <Route path="/login" element={
           <LoginForm
             username={username}
             password={password}
@@ -131,46 +130,9 @@ const App = () => {
             handlePassword={({ target }) => setPassword(target.value)}
             handleUsername={({ target }) => setUsername(target.value)}
           />
-        </>
-      }
-      {user &&
-        <>
-          <h2>blogs</h2>
-          {notificationMsg &&
-            <Notification
-              message={notificationMsg}
-              isError={isError}
-            />
-          }
-          <User
-            name={user.name}
-            handleLogout={handleLogout}
-          />
-          <Togglable
-            btnLabel="create new blog"
-            ref={blogFormRef}
-          >
-            <CreateBlogForm
-              createNewBlog={handleNewBlog}
-            />
-          </Togglable>
-          {
-            blogs
-              .sort((a, b) => b.likes - a.likes)
-              .map(blog =>
-                <Blog
-                  key={blog.id}
-                  blog={blog}
-                  likeBlog={likeBlog}
-                  removeBlog={removeBlog}
-                  madeByUser={user.name === blog.user.name}
-                />
-              )
-          }
-        </>
-      }
-
-    </div>
+        } />
+      </Routes>
+    </Router>
   )
 }
 

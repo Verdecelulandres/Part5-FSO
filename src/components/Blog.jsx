@@ -17,7 +17,7 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
     likeBlog(updatedBlog);
   }
 
-  const madeByUser = loggedUser.name === blog.user.name;
+  const madeByUser = (loggedUser && loggedUser.name === blog.user.name);
 
   return (
     <div className="blog">
@@ -33,7 +33,9 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
           <div className='blog_url'>{blog.url}</div>
           <div className='blog_likes'>
             <span>likes {blog.likes}</span>
-            <button onClick={handleLike}>like</button>
+            {loggedUser &&
+              <button onClick={handleLike}>like</button>
+            }
           </div>
           <div className='blog_user'>{blog.user.name}</div>
           {madeByUser &&

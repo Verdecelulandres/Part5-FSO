@@ -1,10 +1,4 @@
-// import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-// import blogService from '../services/blogs';
-import CreateBlogForm from '../components/CreateBlogForm';
-import User from '../components/User';
-import Blog from '../components/Blog';
-import Togglable from '../components/Togglable';
 
 const BlogList = ({ blogs }) => {
 

@@ -2,19 +2,18 @@ import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom';
 import blogService from './services/blogs';
 import loginService from './services/login';
-import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import Blog from './components/Blog';
+import Notification from './components/Notification';
+import LoginForm from './components/LoginForm';
 import CreateBlogForm from './components/CreateBlogForm';
 
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState(null);
-  // const [notificationMsg, setNotificationMsg] = useState('');
-  // const [isError, setIsError] = useState(false);
-
-  // const blogFormRef = useRef();
+  const [notificationMsg, setNotificationMsg] = useState('');
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -47,8 +46,8 @@ const App = () => {
       }
     } catch (error) {
       console.error(error);
-      // setIsError(true);
-      // displayNotification('wrong username or password');
+      setIsError(true);
+      displayNotification('wrong username or password');
     }
   }
 
@@ -59,19 +58,18 @@ const App = () => {
   }
 
   const handleNewBlog = async newBlog => {
-    // blogFormRef.current.toggleVisibility();
     try {
       const savedBlog = await blogService.create(newBlog);
       const userId = savedBlog.user;
       savedBlog.user = { id: userId, name: user.name, username: user.username };
       setBlogs(blogs.concat(savedBlog));
 
-      // displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
+      displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
       navigate('/');
     } catch (error) {
       console.error(error);
-      // setIsError(true);
-      // displayNotification(error.response.data.error);
+      setIsError(true);
+      displayNotification(error.response.data.error);
     }
   }
 
@@ -106,14 +104,14 @@ const App = () => {
     }
   }
 
-  // const displayNotification = (msg) => {
-  //   setNotificationMsg(msg);
+  const displayNotification = (msg) => {
+    setNotificationMsg(msg);
 
-  //   setTimeout(() => {
-  //     setNotificationMsg('');
-  //     setIsError(false);
-  //   }, 5000);
-  // }
+    setTimeout(() => {
+      setNotificationMsg('');
+      setIsError(false);
+    }, 5000);
+  }
   const singleBlogMatch = useMatch('/blogs/:id');
   const selectedBlog = singleBlogMatch
     ? blogs.find(b => b.id === singleBlogMatch.params.id)
@@ -131,6 +129,12 @@ const App = () => {
           : <Link to="/login">login</Link>
         }
       </div>
+      {notificationMsg &&
+        <Notification
+          message={notificationMsg}
+          isError={isError}
+        />
+      }
       <Routes>
         <Route path="/" element={
           <BlogList blogs={blogs} />

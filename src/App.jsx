@@ -62,11 +62,12 @@ const App = () => {
     // blogFormRef.current.toggleVisibility();
     try {
       const savedBlog = await blogService.create(newBlog);
-      // const userId = savedBlog.user;
-      // savedBlog.user = { id: userId, name: user.name, username: user.username };
+      const userId = savedBlog.user;
+      savedBlog.user = { id: userId, name: user.name, username: user.username };
       setBlogs(blogs.concat(savedBlog));
 
       // displayNotification(`a new blog ${savedBlog.title} by ${savedBlog.author} added`);
+      navigate('/');
     } catch (error) {
       console.error(error);
       // setIsError(true);

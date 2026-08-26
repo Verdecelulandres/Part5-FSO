@@ -30,6 +30,7 @@ describe('Blog app', () => {
       await login(page, 'test', 'password');
 
       await expect(page.getByRole('button', { name: 'logout' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'new blog' })).toBeVisible();
     });
 
     test('fails with wrong credentials', async ({ page }) => {
@@ -48,10 +49,6 @@ describe('Blog app', () => {
       });
 
       test('a new blog can be created', async ({ page }) => {
-        const createBlogLink = await page.getByRole('link', { name: 'new blog' });
-        await expect(createBlogLink).toBeVisible();
-
-        await createBlogLink.click();
 
         await createBlog(page, 'Test blog', 'Test Author', 'www.test.com');
 
@@ -66,11 +63,11 @@ describe('Blog app', () => {
 
         test('a blog can be liked', async ({ page }) => {
           // Testing with last blog in list.
-          const blogDiv = await getExpandedBlogContainer(page, 'blog2');
-          const likesDiv = blogDiv.locator('.blog_likes');
-          await expect(likesDiv).toContainText('likes 0');
-          await likeBlog(blogDiv);
-          await expect(likesDiv).toContainText('likes 1');
+          await page.getByRole('link', { name: 'blog2' }).click();
+          const likesSpan = page.locator('.blog-likes');
+          await expect(likesSpan).toContainText('likes 0');
+          await likeBlog(page);
+          await expect(likesSpan).toContainText('likes 1');
         });
 
         describe('When deleting', () => {

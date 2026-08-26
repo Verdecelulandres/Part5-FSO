@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { test, expect, beforeEach, describe } = require('@playwright/test');
-const { login, createBlog, getExpandedBlogContainer, likeBlog } = require('./helper');
+const { login, createBlog, likeBlog } = require('./helper');
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -85,6 +85,7 @@ describe('Blog app', () => {
           });
 
           test('only blog creator sees remove button', async ({ page, request }) => {
+            await page.pause();
             await request.post('/api/users', {
               data: {
                 username: 'other',
@@ -96,11 +97,18 @@ describe('Blog app', () => {
             await login(page, 'other', 'password');
             await createBlog(page, 'blog3', 'author3', 'www.blog3.com');
 
-            const ownBlog = await getExpandedBlogContainer(page, 'blog3');
-            const otherBlog = await getExpandedBlogContainer(page, 'blog1');
+            await page.getByRole('link', { name: 'blog3' }).click();
+            await page.getByRole('heading', { name: 'author3: blog3' }).waitFor();
 
-            await expect(ownBlog.getByRole('button', { name: 'remove' })).toBeVisible();
-            await expect(otherBlog.getByRole('button', { name: 'remove' })).not.toBeVisible();
+            await expect(page.getByRole('button', { name: 'remove' })).toBeVisible();
+
+            await page.goto('/');
+            await page.getByRole('heading', { name: 'blogs' }).waitFor();
+            
+            await page.getByRole('link', { name: 'blog1' }).click();
+            await page.getByRole('heading', { name: 'author1: blog1' }).waitFor();
+
+            await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible();
           });
 
         });

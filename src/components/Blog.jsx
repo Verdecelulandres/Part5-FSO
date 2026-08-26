@@ -17,26 +17,36 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
 
   return (
     <div className="blog">
-      <h3 className='blog_title'>
-        <span className='blog_author'>{blog.author}: </span>
-        <span className='blog_title'>{blog.title}</span>
+      <h3 className='blog-full-title'>
+        <span className='blog-author'>{blog.author}: </span>
+        <span className='blog-title'>{blog.title}</span>
       </h3>
 
-      <div className='blog_expanded'>
-        <div className='blog_url'>
+      <div className='blog-expanded'>
+        <div className='blog-url'>
           <a href={blog.url}>{blog.url}</a>
         </div>
-        <div className='blog_likes'>
-          <span>likes {blog.likes}</span>
+        <div className='blog-likes-container'>
+          <span className='blog-likes'>likes {blog.likes}</span>
           {loggedUser &&
-            <button onClick={handleLike}>like</button>
+            <button
+              className='blog-like-btn'
+              onClick={handleLike}
+            >
+              like
+            </button>
           }
         </div>
-        <div className='blog_user'>
+        <div className='blog-user'>
           Added by {blog.user.name}
         </div>
         {madeByUser &&
-          <button onClick={() => removeBlog(blog)}>remove</button>
+          <button
+            className="blog-remove-btn"
+            onClick={() => removeBlog(blog)}
+          >
+            remove
+          </button>
         }
 
       </div>

@@ -9,17 +9,12 @@ const login = async (page, username, password) => {
 
 const createBlog = async (page, title, author, url) => {
   await page.goto('/create');
+  await page.getByRole('heading', { name: 'Create new' }).waitFor();
   await page.getByLabel('title:').fill(title);
   await page.getByLabel('author:').fill(author);
   await page.getByLabel('url:').fill(url);
   await page.getByRole('button', { name: 'create' }).click();
   await page.getByText(title, { exact: true }).waitFor();
-}
-
-const getExpandedBlogContainer = async (page, blogToFind) => {
-  const blogDiv = await page.getByText(blogToFind, { exact: true }).locator('../..');
-  await blogDiv.getByRole('button', { name: 'view' }).click();
-  return blogDiv;
 }
 
 const likeBlog = async (page) => {
@@ -34,4 +29,4 @@ const likeBlog = async (page) => {
   await page.getByText(likeSpanContent, { exact: true }).waitFor();
 }
 
-export { login, createBlog, getExpandedBlogContainer, likeBlog }
+export { login, createBlog, likeBlog }

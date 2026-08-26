@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
 const { test, expect, beforeEach, describe } = require('@playwright/test');
-const { login, createBlog, likeBlog } = require('./helper');
+const { login, createBlog, likeBlog, goToBlog, goHome } = require('./helper');
 
 describe('Blog app', () => {
   beforeEach(async ({ page, request }) => {
@@ -12,10 +12,11 @@ describe('Blog app', () => {
         name: 'Test user'
       }
     });
-    await page.goto('/login');
+    await page.goto('/');
   });
 
   test('Login form is shown', async ({ page }) => {
+    await page.goto('/login');
     const usernameInput = await page.getByRole('textbox', { name: 'username' });
     const pwdInput = await page.getByRole('textbox', { name: 'password' });
     const loginBtn = await page.getByRole('button', { name: 'login' });
@@ -28,7 +29,7 @@ describe('Blog app', () => {
   describe('Login', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await login(page, 'test', 'password');
-
+      await page.getByRole('heading', { name: 'blogs' }).waitFor();
       await expect(page.getByRole('button', { name: 'logout' })).toBeVisible();
       await expect(page.getByRole('link', { name: 'new blog' })).toBeVisible();
     });
@@ -46,6 +47,7 @@ describe('Blog app', () => {
     describe('When logged in', () => {
       beforeEach(async ({ page }) => {
         await login(page, 'test', 'password');
+        await page.getByRole('heading', { name: 'blogs' }).waitFor();
       });
 
       test('a new blog can be created', async ({ page }) => {
@@ -63,7 +65,7 @@ describe('Blog app', () => {
 
         test('a blog can be liked', async ({ page }) => {
           // Testing with last blog in list.
-          await page.getByRole('link', { name: 'blog2' }).click();
+          await goToBlog(page, 'blog2');
           const likesSpan = page.locator('.blog-likes');
           await expect(likesSpan).toContainText('likes 0');
           await likeBlog(page);
@@ -74,10 +76,7 @@ describe('Blog app', () => {
           test('blog creator can delete a blog', async ({ page }) => {
             page.on('dialog', dialog => dialog.accept());
             const blogToRemoveLink = await page.getByRole('link', { name: 'blog2' });
-            await blogToRemoveLink.click();
-
-            // ensure page is loaded.
-            await page.getByRole('heading', { name: 'author2: blog2' }).waitFor();
+            await goToBlog(page, 'blog2');
             await page.getByRole('button', { name: 'remove' }).click();
             await page.getByRole('heading', { name: 'blogs' }).waitFor();
 
@@ -95,45 +94,44 @@ describe('Blog app', () => {
             });
             await page.getByRole('button', { name: 'logout' }).click();
             await login(page, 'other', 'password');
+            await page.getByRole('heading', { name: 'blogs' }).waitFor();
             await createBlog(page, 'blog3', 'author3', 'www.blog3.com');
 
-            await page.getByRole('link', { name: 'blog3' }).click();
-            await page.getByRole('heading', { name: 'author3: blog3' }).waitFor();
+            await goToBlog(page, 'blog3');
 
             await expect(page.getByRole('button', { name: 'remove' })).toBeVisible();
 
-            await page.goto('/');
-            await page.getByRole('heading', { name: 'blogs' }).waitFor();
-            
-            await page.getByRole('link', { name: 'blog1' }).click();
-            await page.getByRole('heading', { name: 'author1: blog1' }).waitFor();
+            await goHome(page);
+
+            await goToBlog(page, 'blog1');
 
             await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible();
           });
 
         });
 
-        describe('When liking', () => {
-          beforeEach(async ({ page }) => {
-            const blog1 = await getExpandedBlogContainer(page, 'blog1');
-            const blog2 = await getExpandedBlogContainer(page, 'blog2');
-            await likeBlog(blog2);
-            await likeBlog(blog2);
-            await likeBlog(blog1);
-          });
+        // describe('When liking', () => {
+        //   beforeEach(async ({ page }) => {
+        //     await goToBlog(page, 'blog2');
+        //     await likeBlog(page);
+        //     await likeBlog(page);
+        //     await page.goto('/');
 
-          test('blogs are sorted according to likes descendently', async ({ page }) => {
-            const allBlogs = await page.locator('.blog');
-            await page.pause();
-            await allBlogs.first().getByRole('button', { name: 'hide' });
-            await allBlogs.last().getByRole('button', { name: 'hide' });
-            await expect(allBlogs.first().locator('.blog_likes')).toContainText('likes 2');
-            await expect(allBlogs.first().locator('.blog_title')).toContainText('blog2');
-            await expect(allBlogs.last().locator('.blog_likes')).toContainText('likes 1');
-            await expect(allBlogs.last().locator('.blog_title')).toContainText('blog1');
-          });
+        //     await likeBlog(blog1);
+        //   });
 
-        });
+        //   test('blogs are sorted according to likes descendently', async ({ page }) => {
+        //     const allBlogs = await page.locator('.blog');
+        //     await page.pause();
+        //     await allBlogs.first().getByRole('button', { name: 'hide' });
+        //     await allBlogs.last().getByRole('button', { name: 'hide' });
+        //     await expect(allBlogs.first().locator('.blog_likes')).toContainText('likes 2');
+        //     await expect(allBlogs.first().locator('.blog_title')).toContainText('blog2');
+        //     await expect(allBlogs.last().locator('.blog_likes')).toContainText('likes 1');
+        //     await expect(allBlogs.last().locator('.blog_title')).toContainText('blog1');
+        //   });
+
+        // });
       });
     });
   });

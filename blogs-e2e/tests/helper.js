@@ -28,4 +28,15 @@ const likeBlog = async (page) => {
   await page.getByText(likeSpanContent, { exact: true }).waitFor();
 }
 
-export { login, createBlog, likeBlog }
+const goToBlog = async (page, blogTitle) => {
+  await page.getByRole('link', { name: blogTitle }).click();
+  const blogTitleRegex = new RegExp(`^${blogTitle}$`);
+  await page.locator('.blog-title', { hasText: blogTitleRegex }).waitFor();
+}
+
+const goHome = async (page) => {
+  await page.goto('/');
+  await page.getByRole('heading', { name: 'blogs' }).waitFor();
+}
+
+export { login, createBlog, likeBlog, goToBlog, goHome }

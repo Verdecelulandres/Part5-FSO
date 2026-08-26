@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
-import { expect } from 'vitest';
+import { beforeEach, describe, expect } from 'vitest';
 
 describe('<Blog /> tests', () => {
 
@@ -57,16 +57,24 @@ describe('<Blog /> tests', () => {
       expect(removeBtn).toBeNull();
     });
 
-    test('Ensure like callback is called correctly', async () => {
-      const user = userEvent.setup();
-      const viewBtn = screen.getByText('view');
-      await user.click(viewBtn);
+    describe('As blog creator', () => {
+      beforeEach(() => {
+        const user = {
+          name: 'testUser',
+          id: 1
+        }
+        render(<Blog blog={blog} likeBlog={likeBlog} loggedUser={user} />);
+      });
 
-      const likeBtn = screen.getByText('like');
-      await user.click(likeBtn);
-      await user.click(likeBtn);
+      test('like callback is called correctly', async () => {
+        const user = userEvent.setup();
 
-      expect(likeBlog.mock.calls).toHaveLength(2);
+        const likeBtn = screen.getByRole('button', { name: 'like' });
+        await user.click(likeBtn);
+        await user.click(likeBtn);
+
+        expect(likeBlog.mock.calls).toHaveLength(2);
+      });
     });
   });
 });

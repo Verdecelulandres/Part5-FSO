@@ -72,11 +72,16 @@ describe('Blog app', () => {
 
         describe('When deleting', () => {
           test('blog creator can delete a blog', async ({ page }) => {
-            const blogDiv = await page.getByText('blog2', { exact: true }).locator('../..');
-            await blogDiv.getByRole('button', { name: 'view' }).click();
             page.on('dialog', dialog => dialog.accept());
-            await blogDiv.getByRole('button', { name: 'remove' }).click();
-            await expect(blogDiv).not.toBeVisible();
+            const blogToRemoveLink = await page.getByRole('link', { name: 'blog2' });
+            await blogToRemoveLink.click();
+
+            // ensure page is loaded.
+            await page.getByRole('heading', { name: 'author2: blog2' }).waitFor();
+            await page.getByRole('button', { name: 'remove' }).click();
+            await page.getByRole('heading', { name: 'blogs' }).waitFor();
+
+            await expect(blogToRemoveLink).not.toBeVisible();
           });
 
           test('only blog creator sees remove button', async ({ page, request }) => {

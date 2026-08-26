@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Blog from './Blog';
+import { expect } from 'vitest';
 
 describe('<Blog /> tests', () => {
 
@@ -23,18 +24,23 @@ describe('<Blog /> tests', () => {
     blogContainer = container;
   });
   test('Renders certain blog parts by default', () => {
-
-    const defaultBlogData = blogContainer.querySelector('.blog_default');
-    const expandedBlogData = blogContainer.querySelector('.blog_expanded');
-
-    expect(defaultBlogData).toBeVisible();
-    expect(expandedBlogData).toBeNull();
-
-    const titleSpan = blogContainer.querySelector('.blog_title');
-    const authorSpan = blogContainer.querySelector('.blog_author');
+    const titleSpan = blogContainer.querySelector('.blog-title');
+    const authorSpan = blogContainer.querySelector('.blog-author');
+    const urlDiv = blogContainer.querySelector('.blog-url');
 
     expect(titleSpan).toHaveTextContent('Test blog');
-    expect(authorSpan).toHaveTextContent('test');
+    expect(authorSpan).toHaveTextContent('test:');
+    expect(urlDiv).toHaveTextContent('www.test.com');
+
+    const likeSpan = blogContainer.querySelector('.blog-likes');
+    expect(likeSpan).toBeVisible();
+    expect(likeSpan).toHaveTextContent('likes 1');
+
+    const likeBtn = blogContainer.querySelector('.blog-like-btn');
+    expect(likeBtn).toBeNull();
+
+    const removeBtn = blogContainer.querySelector('.blog-remove-btn');
+    expect(removeBtn).toBeNull();
   });
 
   test('Show blog hidden data after clicked', async () => {

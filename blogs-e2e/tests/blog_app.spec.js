@@ -110,28 +110,41 @@ describe('Blog app', () => {
 
         });
 
-        // describe('When liking', () => {
-        //   beforeEach(async ({ page }) => {
-        //     await goToBlog(page, 'blog2');
-        //     await likeBlog(page);
-        //     await likeBlog(page);
-        //     await page.goto('/');
+        describe('When liking', () => {
+          beforeEach(async ({ page }) => {
+            await goToBlog(page, 'blog2');
 
-        //     await likeBlog(blog1);
-        //   });
+            await likeBlog(page);
+            await likeBlog(page);
 
-        //   test('blogs are sorted according to likes descendently', async ({ page }) => {
-        //     const allBlogs = await page.locator('.blog');
-        //     await page.pause();
-        //     await allBlogs.first().getByRole('button', { name: 'hide' });
-        //     await allBlogs.last().getByRole('button', { name: 'hide' });
-        //     await expect(allBlogs.first().locator('.blog_likes')).toContainText('likes 2');
-        //     await expect(allBlogs.first().locator('.blog_title')).toContainText('blog2');
-        //     await expect(allBlogs.last().locator('.blog_likes')).toContainText('likes 1');
-        //     await expect(allBlogs.last().locator('.blog_title')).toContainText('blog1');
-        //   });
+            await goHome(page);
 
-        // });
+            await goToBlog(page, 'blog1');
+            await likeBlog(page);
+
+            await goHome(page);
+          });
+
+          test('blogs are sorted according to likes descendently', async ({ page }) => {
+            const allBlogs = await page.locator('.blog-link');
+            await page.pause();
+
+            await allBlogs.first().click();
+            await page.getByRole('heading', { name: 'author2: blog2' }).waitFor();
+
+            await expect(page.locator('.blog-likes')).toContainText('likes 2');
+            await expect(page.locator('.blog-title')).toContainText('blog2');
+
+            await goHome(page);
+
+            await allBlogs.last().click();
+            await page.getByRole('heading', { name: 'author1: blog1' }).waitFor();
+
+            await expect(page.locator('.blog-likes')).toContainText('likes 1');
+            await expect(page.locator('.blog-title')).toContainText('blog1');
+          });
+
+        });
       });
     });
   });

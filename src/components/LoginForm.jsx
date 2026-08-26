@@ -1,4 +1,20 @@
-const LoginForm = ({ handleLogin, handleUsername, handlePassword, username, password }) => {
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+const LoginForm = ({ login }) => {
+
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
+
+  const handleLogin = event => {
+    event.preventDefault();
+    login({ username, password });
+    setUsername('');
+    setPassword('');
+    navigate('/');
+  }
+
   return (
     <>
       <h2>Login to application</h2>
@@ -8,7 +24,7 @@ const LoginForm = ({ handleLogin, handleUsername, handlePassword, username, pass
             username
             <input
               type="text"
-              onChange={handleUsername}
+              onChange={({ target }) => setUsername(target.value)}
               value={username}
             />
           </label>
@@ -18,7 +34,7 @@ const LoginForm = ({ handleLogin, handleUsername, handlePassword, username, pass
             password
             <input
               type="password"
-              onChange={handlePassword}
+              onChange={({ target }) => setPassword(target.value)}
               value={password}
             />
           </label>

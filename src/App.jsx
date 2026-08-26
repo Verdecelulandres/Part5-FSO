@@ -8,8 +8,6 @@ import BlogList from './components/BlogList';
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   // const [notificationMsg, setNotificationMsg] = useState('');
   // const [isError, setIsError] = useState(false);
@@ -34,14 +32,11 @@ const App = () => {
     }
   }, []);
 
-  const handleLogin = async event => {
-    event.preventDefault();
+  const handleLogin = async loginData => {
     try {
-      const JSONusr = await loginService.login({ username, password });
+      const JSONusr = await loginService.login(loginData);
       if (JSONusr) {
         setUser(JSONusr);
-        setUsername('');
-        setPassword('');
         window.localStorage.setItem(userStorageStr, JSON.stringify(JSONusr));
         blogService.setToken(JSONusr.token);
       }
@@ -127,11 +122,7 @@ const App = () => {
         } />
         <Route path="/login" element={
           <LoginForm
-            username={username}
-            password={password}
-            handleLogin={handleLogin}
-            handlePassword={({ target }) => setPassword(target.value)}
-            handleUsername={({ target }) => setUsername(target.value)}
+            login={handleLogin}
           />
         } />
       </Routes>

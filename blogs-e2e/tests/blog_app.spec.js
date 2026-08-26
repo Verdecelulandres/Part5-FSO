@@ -29,7 +29,7 @@ describe('Blog app', () => {
     test('succeeds with correct credentials', async ({ page }) => {
       await login(page, 'test', 'password');
 
-      await expect(page.getByText('Test user logged in')).toBeVisible();
+      await expect(page.getByRole('button', { name: 'logout' })).toBeVisible();
     });
 
     test('fails with wrong credentials', async ({ page }) => {

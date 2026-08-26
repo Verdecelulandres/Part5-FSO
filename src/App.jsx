@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
+import Blog from './components/Blog';
 
 
 const App = () => {
@@ -19,6 +20,8 @@ const App = () => {
       setBlogs(blogs)
     )
   }, []);
+
+  const navigate = useNavigate();
 
   const userStorageStr = 'blogAppUser';
 
@@ -50,6 +53,7 @@ const App = () => {
   const handleLogout = () => {
     setUser(null);
     window.localStorage.removeItem(userStorageStr);
+    navigate('/');
   }
 
   const handleNewBlog = async newBlog => {
@@ -106,9 +110,13 @@ const App = () => {
   //     setIsError(false);
   //   }, 5000);
   // }
+  const singleBlogMatch = useMatch('/blogs/:id');
+  const selectedBlog = singleBlogMatch
+    ? blogs.find(b => b.id === singleBlogMatch.params.id)
+    : null
 
   return (
-    <Router>
+    <div>
       <div className='navbar'>
         <Link to="/">blogs</Link>
         {user
@@ -125,8 +133,16 @@ const App = () => {
             login={handleLogin}
           />
         } />
+        <Route path="/blogs/:id" element={
+          <Blog
+            blog={selectedBlog}
+            likeBlog={likeBlog}
+            removeBlog={removeBlog}
+            loggedUser={user}
+          />
+        } />
       </Routes>
-    </Router>
+    </div>
   )
 }
 

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-const Blog = ({ blog, likeBlog, removeBlog, madeByUser }) => {
+const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
 
   const [viewFull, setViewFull] = useState(false);
 
@@ -16,6 +16,8 @@ const Blog = ({ blog, likeBlog, removeBlog, madeByUser }) => {
     }
     likeBlog(updatedBlog);
   }
+
+  const madeByUser = loggedUser.name === blog.user.name;
 
   return (
     <div className="blog">

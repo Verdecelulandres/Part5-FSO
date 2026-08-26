@@ -5,6 +5,7 @@ import loginService from './services/login';
 import LoginForm from './components/LoginForm';
 import BlogList from './components/BlogList';
 import Blog from './components/Blog';
+import CreateBlogForm from './components/CreateBlogForm';
 
 
 const App = () => {
@@ -120,6 +121,9 @@ const App = () => {
     <div>
       <div className='navbar'>
         <Link to="/">blogs</Link>
+        {user &&
+          <Link to="/create">new blog</Link>
+        }
         {user
           ? <button onClick={handleLogout}>logout</button>
           : <Link to="/login">login</Link>
@@ -128,6 +132,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={
           <BlogList blogs={blogs} />
+        } />
+        <Route path="/create" element={
+          <CreateBlogForm createNewBlog={handleNewBlog} />
         } />
         <Route path="/login" element={
           <LoginForm

@@ -12,7 +12,7 @@ describe('Blog app', () => {
         name: 'Test user'
       }
     });
-    await page.goto('/');
+    await page.goto('/login');
   });
 
   test('Login form is shown', async ({ page }) => {

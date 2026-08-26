@@ -1,57 +1,19 @@
-import { useState, useEffect, useRef } from 'react';
+// import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import blogService from '../services/blogs';
-import LoginForm from '../components/LoginForm';
+// import blogService from '../services/blogs';
 import CreateBlogForm from '../components/CreateBlogForm';
-import Notification from '../components/Notification';
 import User from '../components/User';
 import Blog from '../components/Blog';
 import Togglable from '../components/Togglable';
 
 const BlogList = ({ blogs }) => {
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [user, setUser] = useState(null);
-  const [notificationMsg, setNotificationMsg] = useState('');
-  const [isError, setIsError] = useState(false);
+  // const [username, setUsername] = useState('');
+  // const [password, setPassword] = useState('');
+  // const [notificationMsg, setNotificationMsg] = useState('');
+  // const [isError, setIsError] = useState(false);
 
-  const blogFormRef = useRef();
-
-  const userStorageStr = 'blogAppUser';
-
-
-  useEffect(() => {
-    const storedUser = window.localStorage.getItem(userStorageStr);
-    if (storedUser) {
-      const loggedInUser = JSON.parse(storedUser);
-      blogService.setToken(loggedInUser.token);
-      setUser(loggedInUser);
-    }
-  }, []);
-
-  const handleLogin = async event => {
-    event.preventDefault();
-    try {
-      const JSONusr = await loginService.login({ username, password });
-      if (JSONusr) {
-        setUser(JSONusr);
-        setUsername('');
-        setPassword('');
-        window.localStorage.setItem(userStorageStr, JSON.stringify(JSONusr));
-        blogService.setToken(JSONusr.token);
-      }
-    } catch (error) {
-      console.error(error);
-      setIsError(true);
-      displayNotification('wrong username or password');
-    }
-  }
-
-  const handleLogout = () => {
-    setUser(null);
-    window.localStorage.removeItem(userStorageStr);
-  }
+  // const blogFormRef = useRef();
 
   // const handleNewBlog = async newBlog => {
   //   blogFormRef.current.toggleVisibility();
@@ -99,25 +61,10 @@ const BlogList = ({ blogs }) => {
   //   }
   // }
 
-  const displayNotification = (msg) => {
-    setNotificationMsg(msg);
-
-    setTimeout(() => {
-      setNotificationMsg('');
-      setIsError(false);
-    }, 5000);
-  }
-
   return (
     <div>
       <>
         <h2>blogs</h2>
-        {notificationMsg &&
-          <Notification
-            message={notificationMsg}
-            isError={isError}
-          />
-        }
         {/* <User
           name={user.name}
           handleLogout={handleLogout}
@@ -130,19 +77,17 @@ const BlogList = ({ blogs }) => {
             createNewBlog={handleNewBlog}
           />
         </Togglable> */}
-        {
-          blogs
-            .sort((a, b) => b.likes - a.likes)
-            .map(blog =>
-              <Blog
-                key={blog.id}
-                blog={blog}
-              // likeBlog={likeBlog}
-              // removeBlog={removeBlog}
-              // madeByUser={user.name === blog.user.name}
-              />
-            )
-        }
+        <ul>
+          {
+            blogs
+              .sort((a, b) => b.likes - a.likes)
+              .map(blog => (
+                <li key={blog.id}>
+                  <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                </li>
+              ))
+          }
+        </ul>
       </>
 
     </div>

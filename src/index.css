@@ -1,4 +1,4 @@
-.navbar > * {
+.navbar>* {
   padding: 5px;
 }
 
@@ -8,26 +8,31 @@
 }
 
 .notification {
-    background: lightgrey;
-    font-size: 20px;
-    border-style: solid;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 10px;
+  background: lightgrey;
+  font-size: 20px;
+  border-style: solid;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
 
 }
 
 .notification.error {
-    color: red;
+  color: red;
 }
 
 .notification.success {
-    color: green;
+  color: green;
 }
 
-/* .blog {
-  padding-top: 10px;
-  padding-left: 2px;
-  border: 1px solid black;
-  margin-bottom: 5px;
-} */
+.blog {
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.blog-buttons-container {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}

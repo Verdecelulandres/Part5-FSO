@@ -1,3 +1,5 @@
+import { Typography, Button, Paper, Link } from '@mui/material';
+
 const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
 
   if (!blog) {
@@ -16,41 +18,62 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedUser }) => {
   const madeByUser = (loggedUser && loggedUser.name === blog.user.name);
 
   return (
-    <div className="blog">
-      <h3 className='blog-full-title'>
-        <span className='blog-author'>{blog.author}: </span>
+    <Paper className="blog" elevation={4}>
+      <Typography
+        className='blog-full-title'
+        variant='h4'
+      >
         <span className='blog-title'>{blog.title}</span>
-      </h3>
+      </Typography>
 
-      <div className='blog-expanded'>
-        <div className='blog-url'>
-          <a href={blog.url}>{blog.url}</a>
-        </div>
-        <div className='blog-likes-container'>
-          <span className='blog-likes'>likes {blog.likes}</span>
-          {loggedUser &&
-            <button
-              className='blog-like-btn'
-              onClick={handleLike}
-            >
-              like
-            </button>
-          }
-        </div>
-        <div className='blog-user'>
-          Added by {blog.user.name}
-        </div>
+      <Typography
+        variant='subtitle1'
+        style={{ marginTop: 10, color: 'grey' }}
+      >
+        <span className='blog-author'>by {blog.author}</span>
+      </Typography>
+
+
+      <Link className='blog-url' href={blog.url} >
+        {blog.url}
+      </Link>
+
+      <Typography
+        className='blog-user'
+        variant='subtitle2'
+        style={{ marginTop: 10, color: 'grey' }}
+      >
+        Added by {blog.user.name}
+      </Typography>
+
+      <div className='blog-buttons-container'>
+        <Typography
+          className='blog-likes'
+          variant='h6'
+        >
+          likes {blog.likes}
+        </Typography>
+        {loggedUser &&
+          <Button
+            className='blog-like-btn'
+            onClick={handleLike}
+            variant='outlined'
+          >
+            like
+          </Button>
+        }
         {madeByUser &&
-          <button
+          <Button
             className="blog-remove-btn"
             onClick={() => removeBlog(blog)}
+            variant='outlined'
+            color='error'
           >
             remove
-          </button>
+          </Button>
         }
-
       </div>
-    </div>
+    </Paper>
   )
 }
 

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom';
+import { Container } from '@mui/material';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import BlogList from './components/BlogList';
@@ -118,7 +119,7 @@ const App = () => {
     : null
 
   return (
-    <div>
+    <Container>
       <div className='navbar'>
         <Link to="/">blogs</Link>
         {user &&
@@ -156,7 +157,7 @@ const App = () => {
           />
         } />
       </Routes>
-    </div>
+    </Container>
   )
 }
 

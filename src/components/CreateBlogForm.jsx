@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { TextField, Button } from '@mui/material';
 
 const CreateBlogForm = ({ createNewBlog }) => {
 
@@ -31,45 +32,47 @@ const CreateBlogForm = ({ createNewBlog }) => {
     setBlogAuthor('');
     setBlogUrl('');
   }
+  const inputSpacing = { marginBottom: 10 };
 
   return (
     <>
       <h3>Create new</h3>
       <form onSubmit={handleSubmit}>
         <div>
-          <label>
-            title:
-            <input
-              type="text"
-              onChange={handleBlogChange}
-              value={blogTitle}
-              name="blogTitle"
-            />
-          </label>
+          <TextField
+            label="title:"
+            type="text"
+            onChange={handleBlogChange}
+            value={blogTitle}
+            name="blogTitle"
+            style={inputSpacing}
+          />
         </div>
         <div>
-          <label>
-            author:
-            <input
-              type="text"
-              onChange={handleBlogChange}
-              value={blogAuthor}
-              name="blogAuthor"
-            />
-          </label>
+          <TextField
+            label="author:"
+            type="text"
+            onChange={handleBlogChange}
+            value={blogAuthor}
+            name="blogAuthor"
+            style={inputSpacing}
+          />
         </div>
         <div>
-          <label>
-            url:
-            <input
-              type="text"
-              onChange={handleBlogChange}
-              value={blogUrl}
-              name="blogUrl"
-            />
-          </label>
+          <TextField
+            label="url:"
+            type="text"
+            onChange={handleBlogChange}
+            value={blogUrl}
+            name="blogUrl"
+            style={inputSpacing}
+          />
         </div>
-        <button type="submit">create</button>
+        <div>
+          <Button type="submit" variant="contained">
+            create
+          </Button>
+        </div>
       </form>
     </>
   );

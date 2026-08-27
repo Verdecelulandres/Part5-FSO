@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Routes, Route, Link, useMatch, useNavigate } from 'react-router-dom';
-import { Container } from '@mui/material';
+import { Container, AppBar, Toolbar, Button, Typography } from '@mui/material';
 import blogService from './services/blogs';
 import loginService from './services/login';
 import BlogList from './components/BlogList';
@@ -118,18 +118,37 @@ const App = () => {
     ? blogs.find(b => b.id === singleBlogMatch.params.id)
     : null
 
+  const style = { '&:hover': { bgcolor: 'rgba(255,255,255,0.3)' } }
   return (
     <Container>
-      <div className='navbar'>
-        <Link to="/">blogs</Link>
-        {user &&
-          <Link to="/create">new blog</Link>
-        }
-        {user
-          ? <button onClick={handleLogout}>logout</button>
-          : <Link to="/login">login</Link>
-        }
-      </div>
+      <AppBar position='static'>
+        <Toolbar className='navbar'>
+          <div>
+            <Typography className='appTitle' style={{ fontSize: 20 }}>
+              Blog App
+            </Typography>
+          </div>
+          <div>
+            <Button
+              color='inherit'
+              component={Link}
+              to='/'
+              sx={style}
+            >
+              Blogs
+            </Button>
+            {user &&
+              <Button color='inherit' component={Link} to='/create' sx={style}>
+                new blog
+              </Button>
+            }
+            {user
+              ? <Button color='inherit' onClick={handleLogout} sx={style}>logout</Button>
+              : <Button color='inherit' component={Link} to="/login" sx={style}>login</Button>
+            }
+          </div>
+        </Toolbar>
+      </AppBar>
       {notificationMsg &&
         <Notification
           message={notificationMsg}
